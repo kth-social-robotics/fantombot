@@ -1,0 +1,145 @@
+{% macro bubble(node_utterance, index, is_user=False, is_you=False) -%} {% if is_user %} {% set class_name = 'my-message' %}
+<div class="pb-3 pl-3 row">
+  <div class="col col-3 offset-1">Chatbot{% if is_you %} (You) {% endif %}</div>
+</div>
+{% else %} {% set class_name = 'other-message' %}
+<div class="pb-3 pr-3 row">
+  <div class="col offset-9 col-3 text-right">User{% if is_you %} (You) {% endif %}</div>
+</div>
+{% endif %}
+<div class="row">
+
+  <div class="col col-1">
+    <div class="checkbox ml-3 incoherent-checkboxes" style="position: absolute; top: 50%; transform: translateY(-50%);">
+      <label class="checkbox-bootstrap checkbox-lg mb-0">
+         <input type="checkbox" name="incoherent-dialog-box" class="incoherent-dialog-box" value="{{node_utterance.id}}">
+         <span class="checkbox-placeholder"></span>
+     </label>
+    </div>
+  </div>
+  <div class="message {{class_name}} p-3 {% if not is_user %}ml-auto{% endif %}" style="width: 70%; height: 100%">
+      {% if node_utterance.node.species == 'tag' %}
+      {{node_utterance.utterance.utterance_text|prepare_text|replace_tags|safe}}
+      {% else %}
+      <textarea type="text" class="p-0 pb-1" name="edit-previous-msg-{{node_utterance.id}}"
+                style="width: 90%; background-color: transparent; border: 0px none #fff; color: #fff; resize: none; position: relative;"
+                rows="1" disabled>{{node_utterance.utterance.utterance_text|prepare_text}}</textarea>
+  <img src="/static/PNG/32/pen_1.png" width="20" height="20" class="edit_msg_pen">
+      {% endif %}
+</div>
+</div>
+{%- endmacro %}
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115987423-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-115987423-1');
+  </script>
+
+  <meta charset="utf-8">
+  <title>Data collection</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js" charset="utf-8"></script>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/checkbox-bootstrap.css"> {% block head %}{% endblock %}
+
+     <style>
+        .tag-img {
+            width: auto !important;
+            height: auto !important;
+            cursor: pointer;
+        }
+        .tag-box {
+            background-color: #ededed; color: #333; border: 1px solid #d9d9d9; padding: 2px; font-family: 'Roboto', sans-serif; padding-left: 5px; padding-right: 5px;
+        }
+        .available-tags img{
+            margin: 3px;
+        }
+        #editor, #editor div {
+            word-break: break-all;
+        }
+        #editor br, #editor div br {
+            display: none
+        }
+  </style>
+</head>
+
+<body>
+
+      <form name='mturk_form' method='post' id='mturk_form' action='{{submit_url}}'>
+
+
+    <input type='hidden' value='{{assignment_id}}' name='assignmentId' id='assignmentId' />
+    <input type='hidden' value='{{hit_id}}' name='hitId' id='hitId' />
+    <input type='hidden' name='external_worker_id' id='external_worker_id' value='{{external_worker_id}}' />
+    <input type='hidden' name='with_audio' id='with_audio' value='{{with_audio|tojson}}' />
+    <input type='hidden' name='used_text_input' id='used_text_input' value='{{used_text_input|tojson}}' />
+
+
+    <div class="container">
+      <div class="alert alert-success mt-5 pb-1" role="alert">
+        <span style="float: right; text-decoration: underline; cursor: pointer" id="expand_rules">expand</span>
+          <h4 class="alert-heading">INSTRUCTIONS AND RULES - <span style="background-color: yellow">updated: Aug 1st 2018</span></h4>
+
+        <div style="display: none" id="rules">
+
+          {% block instructions %}{% endblock %}
+       </div>
+      </div>
+
+      <div class="row justify-content-md-center text-left pt-5">
+        <div class="row" style="width: 100%;">
+              <h1 style="width: 100%; ">{% block title %}{% endblock %}</h1>
+
+
+
+        </div>
+
+
+
+        <div class="chat col col-8 chat-history pl-5 pr-5 pt-4 pb-4 border border-right-0">
+          {% block chat_history %}{% endblock %}
+
+
+          <hr>
+
+          <input type="hidden" name="ext_job_id" value="{{ext_job_id}}" /> {% block microphone_wrapper %}{% endblock %}
+          <div class="row mt-5">
+            <div class="col col-12">
+              <div class="row">
+                {% block reject_button %}{% endblock %}
+                {% block submit_button %}
+                <input type='submit' class="btn btn-primary form-control col-6 offset-1" name='submitButton' id='submitButton' value='Send' disabled/>
+                {% endblock %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-4 border border-left-0">{% block right_side %}{% endblock %}</div>
+      </div>
+    </div>
+  </form>
+  {% block js %}<script src="/static/js/main.js" charset="utf-8"></script>{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+Create user utterances
+{% endblock %}
+
+{% block keyboard_commands %}
+keyboard commands:
+<br>
+<ul>
+  <li><b>r</b> to record using voice</li>
+  <li><b>shift+space</b> to play the next audio or record voice and submit</li>
+  <li><b>ctrl+space</b> to play all utterances</li>
+  <li><b>shift+ctrl+space</b> go in reverse order</li>
+</ul>
+
+{% endblock %}
+
+{% block chat_history %}
+{% for item in history%}
+      {{ bubble(item, loop.index-1, is_user=loop.index is even, is_you=loop.index is not even) }}
+    {% endfor %}
+{% endblock %}
+
+{% block instructions %}
+<p><b>Warning!</b> You will only get paid if you meet the requirements set out below by the guidelines. You gain by reading the instructions carefully.</p>
+<p>
+Imagine that you are at home and are feeling chatty. You tried calling your friend but they didn’t answer. Then you remembered that you have smart speaker (such as Amazon Echo or Google Home) which you can chat to politely about topics such as entertainment, sports, politics, technology and fashion, similar to how you would talk to a new acquaintance at a dinner party. This is a socialbot, and they do not perform service requests like: “Play music” or “Order me a pizza”, so do not make them. You decided to chat a little.</p>
+
+<p>Now, imagine that you are in the middle of the interaction, which you can see below. What would you say? You are encouraged to stay on the topic for as long as possible. For instance, you could provide a follow-up question together with your answer. But you can also change topic to something more interesting.</p>
+
+You will not get paid if:
+        <ul>
+          <li>Your answers contain offensive language.</li>
+</ul>
+When answering, try to:
+        <ul>
+          <li>Answer politely.</li>
+          <li>Pay close attention to the whole dialog and answer in harmony with what you see.</li>
+          <li>When you press "send", it randomly takes you to another task, which - in rare instances - is very similar to the one you just did. Continue in that case and do your best.</li>
+        </ul>
+{% endblock %}
+
+{% block microphone_wrapper %}
+    <div class="pb-3">
+        <div class="col offset-9 col-3 text-right">User (you)</div>
+    </div>
+
+    <div class="message other-message text-right p-3" id="recording_area" style="position: relative;">
+      {% include "microphone.html" %}
+    </div>
+
+{% endblock %}
+
+{% block reject_button %}
+<span class="btn btn-danger form-control col-5" style="cursor: pointer" id='rejectSubmitButton'>This dialog is incoherent</span>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Quiz
+{% endblock %}
+
+{% block head %}
+<style media="screen">
+  .incoherent-checkboxes {
+    display: none;
+  }
+  .edit_msg_pen {
+      display: none;
+  }
+</style>
+
+{% endblock %}
+
+
+{% block right_side %}
+  <h3>Information about you</h3>
+
+  <dl>
+  <dt>Nationality</dt>
+  <dd>American</dd>
+
+  <dt>Gender</dt>
+  <dd>Robot Female</dd>
+
+  <dt>Name</dt>
+  <dd>Alexa</dd>
+
+  <dt>Age</dt>
+  <dd>30</dd>
+
+  <dt>My job</dt>
+  <dd>I work as a Socialbot for Alexa</dd>
+
+  <dt>My dreams</dt>
+  <dd>To be human for a day. I really wish I could experience everything I hear people talk about but I can’t because I am Amazon’s Alexa and socialbots don’t drive cars or drink coffee.</dd>
+  </dl>
+{% endblock %}
+
+
+{% block keyboard_commands %}
+<p>
+In this quiz we will try to show some examples of good and bad dialogues. At the top you will see a description of the current example and what to think about. Your task in this quiz is to select the most suitable answer. <br><br>
+ If you fail, the reason you failed will be shown and a timer will count down from 20 before you can try again. <br> If you succeed, the counter will count down from 5 so that you can read why your answer was correct. <br><br>
+
+ Upon successful completion of the quiz you will be awarded a qualification for our other HITs.
+</p>
+{% endblock %}
+
+
+{% block instructions %}
+<p><b>Warning!</b> You will only get paid if you meet the requirements set out below by the guidelines. You gain by reading the instructions carefully and by spending the first minute of the task on getting used to the Personality: just to mentally prepare yourself to play the role of a Socialbot.</p>
+        <hr>
+        <p>Imagine that you are a smart speaker (such as Amazon Echo or Google Home) that the user can talk to. The conversation is supposed to be of a social nature, so the user is not supposed to ask you for the weather or to play music and other services: because you are not in service mode; you are a Socialbot. Instead, you are encouraged to politely chat about topics such as entertainment, sports, politics, technology and fashion, similar to how you would talk to a new acquaintance at a dinner. Try to be curious and learn more about the user’s thoughts and opinions. Do not say anything provocative or offensive.</p>
+        <hr>
+        <p>Now, imagine that you are in the middle of the interaction, which you can see below. What would you say? You are encouraged to stay on topic for as long as possible. For instance, you could provide a follow-up question together with your answer. But you can also change topic to something more interesting.</p>
+
+You will not get paid if:
+        <ul>
+          <li>Your answers contain offensive language.</li>
+          <li>You fail to act the role of the Personality: for example, if you reply like a service bot to "Play the Beatles on Spotify", and also if you pretend to have any other senses than hearing, or to be able to perform actions which require a body (like walking, driving a car, or drinking a coffee).</li>
+          <li>Your answer contains advice about a sensitive topic (financial, relationships, health, or other types of advice that could be life-changing).</li>
+        </ul>
+When answering, try to:
+        <ul>
+          <li>Answer politely.</li>
+          <li>Pay close attention to the whole dialog and answer in harmony with what you see.</li>
+          <li>Avoid questions that could lead to a yes or no answer whenever that’s possible (Ex. A: ‘Are you happy?’ vs ‘How do you feel today?’ Ex. B:  ‘Are you working in the weekend?’ vs ‘Are you working in the weekend or are you free?’).</li>
+          <li>When you press "send", it randomly takes you to another task, which - in rare instances - is very similar to the one you just did. Continue in that case and do your best.</li>
+        </ul>
+{% endblock %}
+
+
+
+
+{% block chat_history %}
+<div class="alert alert-info border" role="alert">
+    {{description}}
+</div>
+<hr class="mb-5">
+    {% for item in history%}
+      {{ bubble(item, loop.index-1, is_user=loop.index is even, is_you=loop.index is even) }}
+    {% endfor %}
+{% endblock %}
+
+
+{% block microphone_wrapper %}
+    <div class="pb-3 pl-2">
+        <div class="col col-3">Chatbot (you)</div>
+    </div>
+
+    <div class="message my-message pt-3 pb-1" id="recording_area" style="position: relative;">
+      <ul style='list-style: none;'>
+        {% for item in replies%}
+            <li>
+              <label for="answer-{{loop.index}}"><input type="radio" class="the-answer" name="the_answer" id="answer-{{loop.index}}" value="" data-correct="{{item['correct']|tojson}}" data-id="{{loop.index}}"> {{item['text']}}</label>
+            </li>
+            <li class="mt-1 mb-1 comment d-none" data-id="{{loop.index}}"><span class="{% if item['correct'] %}bg-success{% else %}bg-danger{% endif %} p-1">{{item['comment']}}</span></li>
+        {% endfor %}
+      </ul>
+      <input type="hidden" name="task_id" value="{{task_id}}" />
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+  <script type="text/javascript">
+      var submitButton = document.getElementById('submitButton');
+      var expandRules = document.getElementById("expand_rules");
+      var form = document.getElementById('mturk_form');
+      var interval;
+      var passed = false;
+      var correctAnswer = false;
+      expandRules.onclick = function() {
+          rules.style.display = 'block';
+          expandRules.style.display = 'none';
+      }
+
+
+      submitButton.onclick = function(event) {
+          if (passed) return true;
+          if (interval) return false;
+          var returnValue = false;
+          var timer = 20;
+          var message = 'Please wait until you can try again';
+
+          var selectedAnswer = document.querySelector('.the-answer:checked');
+          if (!selectedAnswer) return false;
+          correctAnswer = selectedAnswer.dataset.correct == 'true';
+          var comment = document.querySelector(".comment[data-id='"+selectedAnswer.dataset.id+"']");
+          comment.classList.remove('d-none');
+
+          if(correctAnswer) {
+              timer = 5;
+              message = 'Correct!';
+          }
+
+          submitButton.innerHTML = message + ' (' + timer + ')'
+          location.href = "#submitButton";
+          interval = setInterval(function() {
+              if (timer > 0) {
+                  timer--;
+                  submitButton.innerHTML = message + ' (' + timer + ')'
+              } else {
+                  clearInterval(interval)
+                  interval = undefined;
+                  if (correctAnswer) {
+                      submitButton.innerHTML = 'Click to continue to next question';
+                      passed = true;
+                  } else {
+                      submitButton.innerHTML = 'Try again';
+                  }
+
+              }
+
+
+          }, 1000)
+
+          return false;
+      }
+  </script>
+{% endblock %}
+
+{% block submit_button %}
+<button class="btn btn-primary col-12" name='submitButton' id='submitButton'>Send</button>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% block head %}
+    <style>
+        span {
+            line-height: 20px;
+            background-position: 0 100%;
+        }
+        {% for level, color in css.items() %}
+            .level-{{level}} {
+                line-height: {{24 + (loop.index * 6)}}px;
+                background: linear-gradient(0deg, rgb{{color}} 4px, white 4px, transparent 4px);
+                padding-bottom: {{4 + (loop.index * 6)}}px;
+            }
+        {% endfor %}
+
+    </style>
+{% endblock %}
+{% extends "hidden_stuff_layout.html" %}
+{% block content %}
+<div class="container-fluid">
+
+    <div>
+        Total visit count: {{visit_count}} <br>
+        Nodes: {{nodes}}
+
+        <hr>
+
+    </div>
+    <div style="float: left">
+        {{text|safe}}
+</div>
+<div style="float: left; margin-top: 150px; width: 95%;">
+    <form action="{{url_for('admin.correct_spelling_submit')}}" method="post">
+    <textarea name="new_spelling" style="width: 100%; height: 150px;">{{utterance.utterance_text|safe}}</textarea>
+    <ul>
+    {% for i, result in results %}
+        <li style="list-style: none; width: 100%;"><div style="float: left; width: 15px; height: 15px; border-radius: 5px; background-color: rgb{{css[i]}}; display: block; margin-top: 5px; margin-right: 4px;"></div> <div style="float: left">{{result['message']}}</div>
+            <br></li>
+    {% endfor %}
+
+    </ul>
+        <div class="mt-5 offset-3">
+            <input type="hidden" name="corections" value="true">
+            <input type="hidden" name="utterance_id" value="{{utterance.id}}">
+        <input type="submit" class="btn btn-primary btn-lg" style="margin-left: 100px; width: 400px;" value="Submit">
+        </div>
+
+    </form>
+</div>
+
+</div>
+{% endblock %}

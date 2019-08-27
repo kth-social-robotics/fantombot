@@ -1,0 +1,132 @@
+{% extends "hidden_stuff_layout.html" %}
+{% block head %}
+
+    
+      <style>
+        #simpleTable {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            
+        }
+
+        #simpleTable td, #simpleTable th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #simpleTable tr:nth-child(even){background-color: #f2f2f2;}
+
+        #simpleTable tr:hover {background-color: #ddd;}
+
+        #simpleTable th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #333333;
+            color: white;
+        }
+    </style>
+
+       <script>
+           $(function() {
+                var baseEditUtteranceUrl = '{{url_for("admin.correct_spelling", utterance_id=999999999999999999, _external=True)}}';
+                $('.edit_msg_pen').click(function(e){
+                    e.preventDefault();
+                    $('#update-utterance-text').show();
+                    var utterance_id = $(this).data('utterance-id');
+                    $('.modal-body iframe').attr("src", "about:blank");
+
+                    $('#myModal').on('show.bs.modal', function () {
+                        $('.modal-body iframe').attr("src", baseEditUtteranceUrl.replace('999999999999999999', utterance_id));
+
+                        $('#update-utterance-text').on('click', function() {
+                            $('.modal-body iframe').contents().find("form").trigger('submit');
+                            $('#update-utterance-text').hide();
+                        })
+
+
+                    });
+                    $('#myModal').on('hidden.bs.modal', function () {
+                        $('.modal-body iframe').attr("src", "about:blank");
+                    });
+                    $('#myModal').modal({show:true})
+                });
+
+           })
+       </script>
+
+{% endblock %}
+{% block content %}
+   <div class="modal" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe src="" style="zoom:0.60" width="99.6%" height="250" frameborder="0"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="update-utterance-text">save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+   <p>Rating: {{rating.rating}}</p>
+          <p>Start time: {{rating.start_time}}</p>
+   <p>Conversation id: {{rating.conversation_id}}</p>
+      <table id="simpleTable">
+        <thead>
+          <tr>
+              <th data-sort="string">User</th>
+              <th data-sort="string">System</th>
+              <th data-sort="string">User transformed</th>
+              <th data-sort="string">Module used</th>
+              <th data-sort="string">GS utt matched</th>
+              <th data-sort="string">GS is root</th>
+              <th data-sort="string">GS score</th>
+              <th data-sort="string">User Topic</th>
+                  <th>User topic (annotated)</th>
+                  <th>User intent</th>
+                  <th>System topic</th>
+                  <th>System intent</th>
+                  <th>Amazon rating</th>
+                  <th>Coherent</th>
+                  <th>Engaging</th>
+
+          </tr>
+          
+        </thead>
+        <tbody>
+          <hr>
+          {% for rating_utterance_row in rating.rating_utterance_rows%}
+              <tr {%if rating_utterance_row.turn_number == rating.turn_error%}class="table-danger"{% endif %}>
+                <td>{{rating_utterance_row.conversation.user_utterance}}</td>
+                  <td>{{rating_utterance_row.conversation.system_utterance}} {%if rating_utterance_row.conversation.used_module == 'GRAPHSEARCH' and rating_utterance_row.conversation.graphsearch_utterance %}<a href="#" data-utterance-id="{{ rating_utterance_row.conversation.graphsearch_matched_utterance_id }}" class="edit_msg_pen"><img src="/static/PNG/32/pen_1.png" width="15" height="15"></a>{%endif%}{% if rating_utterance_row.conversation.graphsearch_utterance.utterance_text != rating_utterance_row.conversation.system_utterance and rating_utterance_row.conversation.used_module == 'GRAPHSEARCH' and rating_utterance_row.conversation.graphsearch_utterance %}<br><span style="color: green">[new utterance: {{rating_utterance_row.conversation.graphsearch_utterance.utterance_text}}]</span>{% endif %}</td>
+                  <td>{{rating_utterance_row.conversation.transformed_user_utterance or ''}}</td>
+                  <td>{{rating_utterance_row.conversation.used_module}}</td>
+              <td>{{rating_utterance_row.conversation.graphsearch_matched_utt}} {% if rating_utterance_row.conversation.graphsearch_matched_utt %}(n: {{rating_utterance_row.conversation.graphsearch_matched_node}}, u: {{rating_utterance_row.conversation.graphsearch_matched_utterance_id}}) {% endif %}</td>
+                <td>{% if rating_utterance_row.conversation.graphsearch_node.path_length == 1 and rating_utterance_row.conversation.used_module == 'GRAPHSEARCH' %}Y{%elif rating_utterance_row.conversation.graphsearch_node.path_length != 1 and rating_utterance_row.conversation.used_module == 'GRAPHSEARCH'%}N{%endif%}</td>
+
+              <td>{{'%0.2f'| format(rating_utterance_row.conversation.graphsearch_score|float)}}</td>
+
+                <td>{{rating_utterance_row.conversation.topic or ''}}</td>
+                  <td>{{rating_utterance_row.user_utterance_topic or ''}}</td>
+                  <td>{{rating_utterance_row.user_utterance_intent or ''}}</td>
+                  <td>{{rating_utterance_row.system_utterance_topic or ''}}</td>
+                  <td>{{rating_utterance_row.system_utterance_intent or ''}}</td>
+                  <td>{{rating_utterance_row.response_quality or ''}}</td>
+                  <td>{%if rating_utterance_row.is_coherent%}x{% endif %}</td>
+                  <td>{%if rating_utterance_row.is_engaging%}x{% endif %}</td>
+
+              </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+{% endblock %}

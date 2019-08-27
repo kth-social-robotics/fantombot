@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+Start a conversation with the system
+{% endblock %}
+
+{% block keyboard_commands %}
+keyboard commands:
+<br>
+<ul>
+  <li><b>r</b> to record using voice</li>
+</ul>
+
+{% endblock %}
+
+{% block instructions %}
+<p><b>Warning!</b> You will only get paid if you meet the requirements set out below by the guidelines. You gain by reading the instructions carefully.</p>
+
+<p>Imagine that you are at home and are feeling chatty. You tried calling your friend but they didn’t answer. Then you remembered that you have smart speaker (such as Amazon Echo or Google Home) which you can chat to politely about topics such as entertainment, sports, politics, technology and fashion, similar to how you would talk to a new acquaintance at a dinner party. This is a socialbot, and they do not perform service requests like: “Play music” or “Order me a pizza”, so do not make them. Now you are thinking about having a chat!</p>
+
+<p>Write down how you would start the interaction. The phrase should start with “Let’s chat about XXX”, where XXX could be a general topic, the name of a movie you have seen, a recent event, or some other topic. If you do this task several times, try to make your responses as varied as possible.</p>
+
+You will not get paid if:
+        <ul>
+          <li>Your answers contain offensive language.</li>
+          <li>Your answer contains opinions on sensitive topics.</li>
+</ul>
+When answering, try to:
+        <ul>
+          <li>Answer politely.</li>
+          <li>Pay close attention to the whole dialog and answer in harmony with what you see.</li>
+          <li>When you press "send", it randomly takes you to another task, which - in rare instances - is very similar to the one you just did. Continue in that case and do your best.</li>
+        </ul>
+
+
+{% endblock %}
+
+{% block microphone_wrapper %}
+  <div class="pb-3">
+      <div class="col offset-9 col-3 text-right">User (you)</div>
+  </div>
+
+    <div class="message other-message text-right p-3" id="recording_area" style="position: relative;">
+      {% include "microphone.html" %}
+    </div>
+{% endblock %}
+
+{% block submit_button %}
+  <input type='submit' class="btn btn-primary form-control col-12" name='submitButton' id='submitButton' value='Send' disabled/>
+{% endblock %}

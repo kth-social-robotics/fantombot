@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Create system responses
+{% endblock %}
+
+
+{% block right_side %}
+  <h3>Information about you</h3>
+
+  <dl>
+  <dt>Name</dt>
+  <dd>It's a personal secret.</dd>
+
+  <dt>Your dream</dt>
+  <dd>To be human for a day.</dd>
+
+  <dt>Persona</dt>
+  {% for trait in persona_sample %}
+  <dd style="background-color: yellow">{{trait}}</dd>
+  {% endfor %}
+  </dl>
+
+{% endblock %}
+
+{% block keyboard_commands %}
+keyboard commands:
+<br>
+<ul>
+  <li><b>r</b> to record using voice</li>
+  <li><b>shift+space</b> to play the next audio or record voice and submit</li>
+  <li><b>ctrl+space</b> to play all utterances</li>
+  <li><b>shift+ctrl+space</b> go in reverse order</li>
+</ul>
+
+{% endblock %}
+
+{% block instructions %}
+<p><b>Warning!</b> You will only get paid if you meet the requirements set out below by the guidelines. You gain by reading the instructions carefully and by spending the first minute of the task on getting used to the Personality: just to mentally prepare yourself to play the role of a Socialbot.</p>
+        <hr>
+        <p>Imagine that you are a smart speaker (such as Amazon Echo or Google Home) that the user can talk to. The conversation is supposed to be of a social nature, so the user is not supposed to ask you for the weather or to play music and other services: because you are not in service mode; you are a Socialbot. Instead, you are encouraged to politely chat about topics such as entertainment, sports, politics, technology and fashion, similar to how you would talk to a new acquaintance at a dinner. Try to be curious and learn more about the user’s thoughts and opinions. Do not say anything provocative or offensive.</p>
+        <hr>
+        <p>Now, imagine that you are in the middle of the interaction, which you can see below. What would you say? You are encouraged to stay on topic for as long as possible. For instance, you could provide a follow-up question together with your answer. But you can also change topic to something more interesting.</p>
+
+<b>You will not get paid if:</b>
+        <ul>
+          <li>Your answers contain offensive language.</li>
+          <li>You fail to act the role of the Personality: for example, if you reply like a service bot to "Play the Beatles on Spotify", and also if you pretend to have any other senses than hearing, or to be able to perform actions which require a body (like walking, driving a car, or drinking a coffee).</li>
+          <li>Your answer contains advice about a sensitive topic (financial, relationships, health, or other types of advice that could be life-changing).</li>
+            <li>Your answers contain spelling mistakes or grammatical errors</li>
+            <li>You do not try to follow the instructions given below</li>
+        </ul>
+<b>When answering (not optional):</b>
+        <ul>
+          <li>Answer politely.</li>
+          <li>Avoid posing to broad follow up questions. Multiple choice questions and yes/no questions are very good! But the most important thing is to keep the conversation going. </li>
+          <li>At least do a google search for a term you don't know.</li>
+          <li>Write your answers so that they work equally well if they are said today as in a year.</li>
+          <li>Write your answers so that they work equally well no matter where the person is.</li>
+          <li>Pay close attention to the whole dialog and answer in harmony with what you see.</li>
+          <li>Avoid asking too complex or broad questions. It's ok to provide a yes/no questions now and again.</li>
+          <li>Be aware that a lot of people interacting with the bot are children, answer accordingly.</li>
+          <li>You are limited to speaking only. For example, if the user asks you to turn on the lamps or play a song, you cannot do it. But you can talk about it!</li>
+        </ul>
+<i>What does</i> <span style="background-color: #dc3545; border-radius: 4px; color: white; padding: 1px">This dialog is incoherent</span><i> mean?</i> <br />
+A dialog is considered incoherent if:
+    <ul>
+          <li>What you see does not make sense</li>
+          <li>There are spelling mistakes and grammatical errors on the chatbot side</li>
+        <li>Utterances that refer to things previously not mentioned. E.g. <i>What is it about?</i>, <i>Do you like it</i>. </li>
+</ul>
+
+
+{% endblock %}
+
+
+
+
+{% block chat_history %}
+    {% if history|length < 6%}
+    <div class="pb-3 pl-3 row">
+      <div class="col col-3 offset-1">Chatbot (you)</div>
+    </div>
+    <div class="row">
+
+      <div class="offset-1 message my-message p-3" style="width: 70%; height: 100%">
+          <textarea type="text" class="p-0 pb-1"
+                    style="width: 90%; background-color: transparent; border: 0px none #fff; color: #fff; resize: none; position: relative;"
+                    rows="1" disabled>What do you want to talk about?</textarea>
+    </div>
+    </div>
+    {% endif %}
+    {% for node_utterance in history%}
+      {{ bubble(node_utterance, loop.index-1, is_user=loop.index is even, is_you=loop.index is even) }}
+    {% endfor %}
+{% endblock %}
+
+
+{% block microphone_wrapper %}
+    <div class="pb-3 pl-2">
+        <div class="col col-3">Chatbot (you)</div>
+    </div>
+
+    <div class="message my-message text-right p-3" id="recording_area" style="position: relative;">
+      {% include "microphone.html" %}
+    </div>
+{% endblock %}
+
+{% block reject_button %}
+<span class="btn btn-danger form-control col-5" style="cursor: pointer" id='rejectSubmitButton'>This dialog is incoherent</span>
+{% endblock %}

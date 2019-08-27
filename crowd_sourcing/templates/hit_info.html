@@ -1,0 +1,96 @@
+{% extends "hidden_stuff_layout.html" %}
+
+
+{% block content %}
+
+    <div class="container">
+
+
+    <h3>{{title}}</h3>
+    <br>
+    ${{reward}}
+    <br>
+    <br>
+    {{description}}
+    <br>
+    <br>
+    HIT ID: {{hit_id}}
+    <br>
+    <br>
+    Assignment ID: {{assignment_id}}
+    <br>
+    <br>
+    Worker ID: {{(worker_answer.node_utterance_worker_job.worker.id if worker_answer.node_utterance_worker_job)}}
+    <br>
+    <br>
+    External Worker ID: {{(worker_answer.node_utterance_worker_job.worker.external_worker_id if worker_answer.node_utterance_worker_job)}}
+    <br>
+    <br>
+    Job ID: {{job.id}}
+    <br>
+    <br>
+    External job ID: {{job.external_id}}
+    <br>
+    <br>
+    <br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Node ID</th>
+          <th>Node utterance ID</th>
+          <th>Worker ID</th>
+          <th>External Worker ID</th>
+          <th>Utterance</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for node_utterance in history%}
+
+          <tr class="{%if node_utterance.id == answer['incoherent']%}bg-danger{%endif %}">
+              <td>{%if node_utterance.node.is_user%}user{% else %}system{% endif %}</td>
+              <td>{{node_utterance.node.id}}</td>
+              <td>{{node_utterance.id}}</td>
+              <td>{{node_utterance.node_utterance_worker_job.worker.id if node_utterance.node_utterance_worker_job else '-'}}</td>
+              <td>{{node_utterance.node_utterance_worker_job.worker.external_worker_id if node_utterance.node_utterance_worker_job else '-'}}</td>
+              <td>{{node_utterance.utterance.utterance_text|prepare_text}}</td>
+          </tr>
+        {%endfor%}
+        {% if worker_answer and not answer['incoherent'] %}
+        <tr class="{%if worker_answer.id == answer['incoherent']%}bg-danger{%else%}bg-success{%endif %}">
+              <td>{%if worker_answer.node.is_user%}user{% else %}system{% endif %}</td>
+              <td>{{worker_answer.node.id}}</td>
+              <td>{{worker_answer.id}}</td>
+              <td>{{worker_answer.node_utterance_worker_job.worker.id if worker_answer.node_utterance_worker_job else '-'}}</td>
+              <td>{{worker_answer.node_utterance_worker_job.worker.external_worker_id if worker_answer.node_utterance_worker_job else '-'}}</td>
+              <td>{{worker_answer.utterance.utterance_text}}</td>
+          </tr>
+        {% endif %}
+
+
+      </tbody>
+    </table>
+
+    <form class="" action="{{url_for('admin.assess_assignment')}}" method="post">
+        Message to worker (required if reject):
+        <textarea name="comment" id="comment" rows="4" class="form-control col-6 mb-5"></textarea>
+        <input type="hidden" id="assignment_id" name="assignment_id" value="{{assignment_id}}">
+        <input type="submit" name="reject_button" class="btn btn-danger btn-lg col-3 offset-2" onclick="return checkReject()" value="Reject" />
+        <input type="submit" name="approve_button" class="btn btn-success btn-lg col-3 offset-1" value="Approve" />
+    </form>
+
+    <br>
+
+
+</div>
+  <script type="text/javascript">
+      function checkReject() {
+          if (!confirm('are you sure you want to reject it?')) return false;
+          if (document.getElementById('comment').value == '') {
+              alert('You need to give a reason for the reject.')
+              return false;
+          }
+          return true;
+      }
+  </script>
+{% endblock %}
