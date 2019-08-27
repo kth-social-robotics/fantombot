@@ -5,14 +5,14 @@ This repository contains the code and data used for the analysis in the paper "C
 
 We also include the code that was developed by Team Fantom during the 2018 Alexa Prize. This includes the code for crowdsourcing and the graph structure presented in the CUI paper.
 
-##analysis
+## analysis
 Contains: corpora, the processed data used for analysis; raw_corpora, the unprocessed data used for analysis; extractors, the code used to process raw_corpora; and evaluation, the code used to generate and collect results from the experiment interface.
 
-##crowdsourcing
+## crowdsourcing
 
-##fantom-util
+## fantom-util
 
-##sleep-walker
+## sleep-walker
 
 
 ## Publications
