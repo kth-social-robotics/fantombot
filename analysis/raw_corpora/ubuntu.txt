@@ -1,0 +1,200 @@
+what do you mean by; "non-ose version of virtualbox"	non-opensource...it works better (like giving good usb redirection)
+which phone? see if gammu supports it	it is a sonyericsson t630
+where should the .conkyrc be? $home?	perhaps you installed a bad extension?
+apt-cache search for tha package name	what else should i reinstall ?
+can chrome be on ubuntu?	you can run Google Chrome or Chromium (open source version)
+when you install with apt-get	check the bottom of the man page, under FILES
+did you check the volume controls?	I've tried alot of combinations in alsamixer
+that would be a java file	thanks, never worked with java
+ubuntu install on macbookpro anyone?	i am runnin it on a macbook
+add users and rw to your /etc/fstab file	I am mounting this on the fly not on startup
+or use liveCD and mount the internal partition	k i will try that
+why would u do that?	I'm fixing a broken debian isntalation
+Me neither, it's okay, I'll wait or reinstall.	I'd be super curious if a fresh OS fixes it
+i have a on board but its desctiveted on bios	 askreet_away, Loaded ALSA modules " "
+I'm not certain. I just did: sudo apt-get install amarok	that will work, but read the linkie for 1.4.1 instructions
+whats that program to edit what starts on startup?	 system startup in general or desktop startup?
+it daily shows around 80 mb updates	you don't *have* to get all updates :)
+can you help me find a complete dosbox.deb	go here, download, and build from source
+Says "no wireless extensions." for lo, eth0, and sit0	got me....you probably have to point ubuntu at the device
+it has a menu shortcut?	IIRC everything in the menu is a shortcut
+ yeah i just loading :)	: have problems with identifying partitions ? > sudo fdisk-l
+how can i change it back to GMT+10?	try this -- sudo dpkg-reconfigure -plow tzdata
+find -name ´*foo*´ does not work	try: find / | grep foo
+default share on a win xp comuter..firewall is open	I think you want smbfs
+zsh: bus error  wget -rk http://learnyouahaskell.com/chapters. Fuck. :)	I'd recommend going easy on the profanities there :S...
+maybe because I am using a binary Nvidia driver?	then nvidia-glx-dev is what you want.
+it's Dillweed :) and do you have xfce installed?	Yes...sorry monitor is bad ;P
+funniest part, im caucasion :)	wow... the ubuntu community sure is spread out
+its like the terminal open de bashrc file	opens it where?  In what application?
+don't think my sdcc installed properly	you know the names of each?
+so now you can do 'sudo cp index.html /etc/apt/sources.list'	Yes I did that :P  What should I apt-get?
+nvidia makes them so check their forum	not me, no, I fight thru ati's
+i cant find it in synaptic at all	I don't see it either
+what about resizing and such stuff?	 mencoder ffmpeg - do all i need.
+hmm someone spammed win.exe via tftp (!)	thats not very nice, someone doing that to you,
+be in here the 19th :)	That when feisty comes out ?
+cedega looks like more proffesional ..	 its also a comercial product last i checked.
+well, I thought restart and run fsck wouldn't harm	this is an external usb disk, i assume?
+the annoying thing is that it worked in Hardy	personally I know nearly nothing of it :|
+ the 'beep' command can do different beeps.	how did you do it?
+should I try the original onboard adapter and restart?	yes. use the interface that previously worked
+there is no directory like that	then you don't have apache
+opera is in the multiverse repositories rite?	put the contents of /etc/apt/sources.list into http://paste.ubuntulinux.nl/
+not the standard ubuntu ones.	 you may want to clarify that quetion.
+is there a motorol phone tools for ubuntu???	have you tried looking in synaptic or google?
+I use the huwei E180 (I think) on 3	do you have trouble reconnecting when resuming from hibernate ?
+Again, Please remain on topic.	One of these days your gonna slip
+I have the prism54 mod. here on Dapper!?	then he should have it
+sudo asks for a password and nobody gives it	then what am i suppose to do
+how to decrease boot time	with Lucid on an SSD.
+can you point me towards and doc on it?	yea, just a minute, let me look it up.
+sure it is 192.168.1.1 ? some routers are different	yes. positive. I connected to it earlier.
+now you should see there: /usr/bin/fireglcontrolpanel	I think I know why
+I can't figure out where it's built from	check man moc or moc --help
+show them unity, gnome3 and kde4	thanks for the hint i will pursue this later on...
+sry its not alsa thats in there its Arts	and can you run it manually?
+Ah. Ok, then how would I set it?	ip r a 1.2.3.4/5 via 1.2.3.4
+good stuff. did it give any errors or anything?	nope, do I do $ sudo ./vmware-install.pl gain?
+I've seen people install ubuntu over ubuntu	How can I do that?
+Anyone know which ATI drivers are the best to use?	explain your needs. else read the wiki.
+wat fs should I use?	ext3 is the most used one
+that command didn't work :(	are you using the correct package name?
+of course, i have it enable like a year ago	 then you should have nvidia-settings
+how do i fix it?	BIOS issue. not a #ubuntu one
+can someone please help me	for real dos  apps = dosemu or dosbox
+should work fine then ;)	oh god you're freaking awesome ;)
+what ever the amount more people should be	is it easy to learn?
+i tryed kernels from http://www.linux-mips.org/wiki/Getting_the_kernel, also from kernels.org	which mips are you buidling for?
+ what format is the paper in?	it says to click the adobe print icon
+so you be's running ubuntu now?	I broke off a nibble to chew on
+and you're editing the config-file for this program, right?	but i dunno what to enter for some keys...
+can anybody tell me which the best antivirus? Please?	the best, the only one.. clamav
+no, I cannot connect without having ntlm2 enabled	I am using it out the box
+Follow this guide : http://grub.enbug.org/Grub2LiveCdInstallGuide	thanks I'll give that one a go
+what was your message before freezing	from then it just has a blinking curser.
+is there nothing in dmesg?	sorry [ 1544.766432] lirc_serial: port 02f8 already in use
+Look at line 39 of the pastebin.	so, then without options..... sudo e2fsck  /dev/sda1
+Dagon: that was to easy I want a refund hahaha	 dynamic portforward in windows
+- yes it should do :)	nope.. it doesn't have it.. :(
+yeah it works with other disks	is your drive a DVD-R drive?
+what repos do you have enabled now?	Stable defualts havent touched them..
+err okay. Does ls -la /etc/X11 show anything?	nope it says cannot access no such file or directory
+why don't you just install nessus from apt?	out of date, last time I checked
+its my source of stock footage nikin	sorry i dont understand the word... "stock footage"
+open software center, look for it	no it doesn't have it
+hmm.. thats a good question. Let me run it.	then you can add it with the menu editor
+Can you please give me a URL.	is ur wireless card an atheros?
+http://www.oswd.org/download.phtml/blueheaven.zip?id=1895 (and it's not tar)	opens fine with file-roller here
+im not sure about "wine" thing	it dosen't work in wine
+I mean what do you mean by OB?	in the index/stat of the file it returns 0B apparently
+takes 3 minutes here man :)	are you talking about the grub2 ?
+How should I go about exiting gnome and running fluxbox?	select it on the login sfreen under session
+an hour for a kernel.	you've never been on dialup have you?
+yeah, if possible, defrag in windows first	well its already running so lol
+to suspend the laptop, or desktop pc	 oh ok thanks mate
+sure it's not a memory dump kinsky ?	how can i get to know that?
+Thanks a lot for the help	you did by your own ;-)
+anyone there to help me out	 i didnt see your question
+it mounts as a media drive	did you use the UUID in /etc/fstab?
+its nothing I can't handle :)	Because there is no benefit, and it's riskier :)
+not dualboot with windows? :p	Seriously, it worked like 2 hours ago
+how do I mount the floppy	mount /dev/fd0 /mnt or some such
+I'm using a 64 bit system, adobe doesn't work	it does work for me.. at least randomly with ff3
+i want a C function	yeah, that's what I'm telling you know
+ahh my english is bad in the morning sorry :/	How do I start emacs over console?
+did anyone read the ubuntu-girlfriend experience?	yeah, seemed a bit contrived to me
+can i just pm you?	no. why would you need to?
+I have some console-experience and also with editting files etc	Ok. you want to go to /etc/gconf/gconf.xml.mandatory/
+you could try clonezilla . http://www.clonezilla.org/	Thanks, I'll try it out.
+but if i start nautilus it doesn't start maximized	try: (if (is (application_name) "File Manager") (maximize))
+<wide-eye>, thats what i need	yes, sorry dont know the name of the ubuntu pakage
+hi all. how do i change my login screen?	you're asking the wrong question. What needs changing about it?
+i overwritten /etc/apt/sources.list in oneric. Can I restore it ?	open the softwarecenter/synaptic and reenable the repos/settings oyu want
+as it seems there is no "gitlab" in the ubuntu-repos	how can i install gitlab from ubuntu repo?
+you need to associate the file extention to gedit	only whats needed to get rid of that "nag"?
+i think i typed it wrong, let me check	you didn't type it wrong :-)
+so I should look in the LTS versions?	that'd be your best bet
+alvarezp: MPD might be close, or perhaps rhythmbox or amarok	this is what i got: http://pastebin.com/d2112ef9c
+Have you tried sudo apt-get install -f	thank you very much :)
+How can I fix it?	 mint has its own support channels.
+not final until the announcement's out	But those are the isos?
+how to install *.deb file package?	try finding the file in apt-get first
+have a look at what ubuntu means as a word	ya i saw that, and sounds good
+so it's correct that you ubuntu/boot partion is /dev/hda2?	no, its on a different partition hdc2
+yes it was wrong what I did	i've deleted /dev files before too ;)
+then use it to store big files.	isn't it just mkfs.xfs /dev/[device]
+Where can i paste my sources.list?	paste the error as well
+schorched3d is *so* a rip-off of Worms.	how do you upgrade to hoary?
+you may find http://forge.mysql.com/wiki/MySQL_Internals_File_Formats helpful	forexample it uses \xca\xfe\xba\xbe for java as header bytes
+both commands just sit there on an empty line	Sorry, on laptop nmap desktop_ip -p 3333
+You don't want any panel at all?	yes .. I am replacing everything with awn
+Has anyone ever tried crossover?	I have. It's not very impressive.
+Yeps, all on, even the led is on	Software Modem would indicate a DialUp modem.
+if you want, you can set it up with iptables	ikonia: Which would be easier to do?
+:) ... I just don't like that added programs	yeah well whats the difference.
+not in X. Not in the terminal.	you do realise your heading into "bad security" territory right
+ moms an pops are using it now	not sayin there aren't techy ma an pops around now.
+yes that sums it up	i guess they are fast enough
+has anyone here used lamip	that is the current hoary version
+ah ok, try recovery mode. my fault	top top of screen says " gnu grub version 1.99~rc1-13ubuntu3
+uh, right.  maybe you could sound less argumentative?	I'm not arguing, I'm stating facts...
+is it better than wista, or win 7	some programs are only made for Windows
+ubuntu and kubuntu cd only	i would reccomment getting knoppix, its a very handy distro
+which is better to use, apt-get or apptitude?	he mac is normally hardcoded onto a chip
+dunno? a shell account at some machine?	that should return  'bash'
+any configuration guide , or a pointer to usefull tutor	google for init scripts linux
+does dc++ run in Ubuntu?	there is a dc++ client for ubuntu
+does your cpu get stuck on 1ghz?	you say it's a known bug?
+so its most likely something like mysql-server-der	I can't find dev either
+so may give different results	still don't see the logic :)
+http://paste.ubuntu.com/24617/  <-- that's my fdisk	blah :)  fdisk /dev/sda, and then use p
+ Did you just get a network printer connected?	I just got one to work, yes.
+it's hdparm for scsi-device (usb is mapped as scsi)	sounds interesting, i'll give it a try
+are you installing ati's driver from a package?	Right. I built the package from ATI's driver package
+what must i type in /etc/apt/sources.list ??	that depends on what you're trying to do w/ sources.list
+there's a longish thread on ubuntuforums about it	OK - but for me it works :)
+what is the default chmod for /usr?	drwxr-xr-x   aka `chmod 755
+... because compiz is all flash and bells, right?	yes, even when not running it still runs haha
+yes,   in the users home	same here.. not font_cache... only fontconfig
+that didn't help at all	maybe your automount is turned off. try this link: https://help.ubuntu.com/community/Mount/USB
+OK, so it's a Chicony camera. Let's see	uh.... I have big doubts it's possible.
+bite the bullet.  11.10 to 12.04.	just did and now this has happened
+i think thats the first rule of airplanes haha	aha! I knew I was confused!
+flux is in the repos	its not showing up in synaptic
+wine - Microsoft Windows Compatibility Layer (Binary Emulator and Library)	I think its enabled even in Breezy
+without the "", of course	ok thanks i will try it
+server isn't set right then	what do you suggest for setting it right then ?
+yea it sux and i like controll over my install	same here, but i gotta learn, unfortunately
+what does that mean? Does the hash match?	it matches with the 4º up down
+do you want the now solution or the permament solution?	i just have eth1 inet dhcp set in config
+tinkering with the ole xbox huh <G>	oh, did I mention... I like to live dangerously
+those are not iso files	the alternate installer is an iso file.
+but with plugin from Adibe ...all OK	and there won't be for the forseeable future.
+I don't understand I thought this was #ubuntu	it is i was in wrong channel
+or Firefox browser (i.e., /usr/lib/mozilla):	you are manually runnign the flash isntaller?  why?
+it was ment to u.	I checked my specs and Built-in Speakers And Microphone
+chroot? and I mounted it to /media/	in that case run this: chroot /media/
+you fail. debian uses gnome if you install gnome	give it a wirl for youself
+I'm atm getting ~3MB/s with ubuntu and ~7MB/s in vista	give ftp a try... see if the speeds improve
+the ones installed by default	they are the best ?
+did the grep command from before not turn anything up?	the command didn't do anything for me
+how can i install macromedia shockwave?	no macromedia shockware yet for linux.. :)
+flash sucks, whereas shockwave is mainly cool ;-)	too expensive to build other archs
+the cpuinfo_min/max freq says 600/1400	oh, I thought you meant 600 fixed
+look, this is plain CLI, i have no x installed	I dont know what your problem is
+Intel CPU. PM 1.7G. Frist generation Centrino	what iso are you using?
+do you have universe and multiverse repositories?	i have no idea, how would i add them?
+i've checked. ubuntu isn't packaging it	then thats how you request packaging
+'man openssl' -- it's a long but good read	i did. but can't find the info that i need.
+security-wise that's much the same using telnet	 i will register today . PLease don't mind
+does the shutdown halt then	it just stays on that screen indefinately
+yeah I somehow missed it apparantly lol	you might have not selected the "Medium" option
+how do I remove them?	they are all in /var/cache/apt/archives
+the kind gentleman who provides this distribution for free	do you think he's listening? =P
+can anyone tell me how I can reinstall grub?	you have a live cd laying around?
+off of my linux system	 installl one, start it up.. :P
+thanks..ill give it a go	no problem, reading a howto won't hurt you anyway ;-)
+I already have that option and it doesn't work	there goes that theory then huh?
+dd will never botch its source file	thanks, all i wanted to know :D
+what does the | cut -f1 do?	get only the filesize withouth the name

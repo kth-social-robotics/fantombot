@@ -1,0 +1,128 @@
+<html>
+    <head>
+        <style>
+            table tr {
+                text-align: center;
+            }
+            table tr.bottom td {
+                padding-bottom: 15px;
+            }
+            .red {
+                background-color: #FFA6A6
+            }
+            .yellow {
+                background-color: #FFFF9E
+            }
+            .green {
+                background-color: #6ee387
+            }
+            .utterance {
+                background-color: #e6e6e6;
+                font-weight: bold;
+                width: 960px;
+                padding: 20px;
+            }
+            #submit {
+                width: 400px;
+                height: 40px;
+                background-color: green;
+                color: white;
+                font-size: 30px;
+            }
+        </style>
+        <script>
+
+
+
+
+            window.onload = function() {
+        
+                var elements = document.getElementsByClassName("radiobutton");
+                
+                for(el in elements) {
+                    elements[el].checked = false;
+                }
+            }
+
+            function answerRadio(name, value) {
+                var radios = document.querySelectorAll('input[type="radio"]:checked');
+                if(radios.length == 4) {
+                    document.getElementById('submit').disabled = false
+                } else {
+                    document.getElementById('submit').disabled = true
+                }
+
+                if(name == 'user') {
+                    if(value < 2) {
+                        document.getElementById('second-part').style.display = 'none';
+                        document.getElementById('submit').disabled = false;
+                    } else {
+                        document.getElementById('second-part').style.display = 'block';
+                    }
+                }
+
+
+
+            }
+        </script>
+    </head>
+    <body>
+        {% if debug %} [debug {{ramdom_corpus}}, {{random_row}}] {% endif %}
+        <h3>Instructions:</h3>
+            <p>Thank you for helping out with our data collection regarding social dialogue systems.</p>
+            <p>You will be presented with two consecutive utterances reflecting an excerpt of a conversation between a user and a social chatbot, your task is to answer some questions regarding them.</p>
+            <p>The excerpts can be from anywhere in the dialogue, so in some cases the first utterance is in response to something that was previously said. In that case, try to imagine the most relevant context and answer the questions based on that. </p>
+            <p>A recommendation is to use tab, space and the arrow buttons to quickly navigate the interface</p>
+        {{annotation_row+1}}/{{total_length}}
+        <form action="/submit" method="post">
+            <input type="hidden" name="corpus" value="{{ramdom_corpus}}">
+            <input type="hidden" name="row" value="{{random_row}}">
+            <input type="hidden" name="annotation_row" value="{{annotation_row}}">
+            <input type="hidden" name="annotation_set" value="{{annotation_set}}">
+            <div class="utterance">USER: {{user_utterance|annotation_filter}}</div>
+            <br />
+            <div class="utterance">SYSTEM: {{system_utterance|annotation_filter}}</div>
+            <br />
+            {{generate_radio(
+                "user",
+                "How likely is it that you would hear/read this <b>user utterance</b> being said to a social chatbot?",
+                ["Very unlikely", "Unlikely"],
+                ["Neither"],
+                ["Likely", "Very likely"],
+            )|safe}}
+            <br />
+            <br />
+            <div id="second-part" style="display: none">
+            <br />
+            <br />
+            {{generate_radio(
+                "system",
+                "How coherent is the <b>system answer</b> with the user's utterance?",
+                ["Very incoherent", "Incoherent"],
+                ["Neither"],
+                ["Coherent", "Very coherent"],
+            )|safe}}
+            <br />
+            {{generate_radio(
+                "system_3",
+                "How well does the <b>system answer</b> help to continue the conversation?",
+                ["Very unhelpful", "Unhelpful"],
+                ["Neither"],
+                ["Helpful", "Very helpful"],
+            )|safe}}
+            <br />
+            {{generate_radio(
+                "system_2",
+                "How interesting/fun is the <b>system answer</b>?",
+                ["Very uninteresting/boring", "Uninteresting/boring"],
+                ["Neither"],
+                ["Interesting/fun", "Very interesting/fun"],
+            )|safe}}
+
+            </div>
+            <br />
+            <br />
+            <input type="submit" id="submit" value="submit" disabled>
+        </form>
+    </body>
+</html>
