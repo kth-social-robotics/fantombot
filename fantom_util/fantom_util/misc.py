@@ -9,14 +9,14 @@ import requests
 from fantom_util.constants import TAG_ATTRIBUTES
 
 
-def generate_tts(text: str, user_voice: bool=True):
-    polly = boto3.Session().client('polly', region_name='us-east-1')
+def generate_tts(text: str, user_voice: bool = True):
+    polly = boto3.Session().client("polly", region_name="us-east-1")
     if user_voice:
-        voice = 'Joey'
+        voice = "Joey"
     else:
-        voice = 'Joanna'
-    response = polly.synthesize_speech(OutputFormat='mp3', Text=text, VoiceId=voice)
-    return response['AudioStream']
+        voice = "Joanna"
+    response = polly.synthesize_speech(OutputFormat="mp3", Text=text, VoiceId=voice)
+    return response["AudioStream"]
 
 
 def get_persona_sample():
@@ -50,33 +50,34 @@ def get_persona_sample():
         "She likes American poetry: Robert Frost and 'The Road Not Taken' is her favorite.",
         "She loves making people laugh at her jokes: if they are having a good time, so is she.",
         "She's a natural born reporter because she likes telling stories as well as listening to them",
-        "She's fascinated with horses and horse riding."]
+        "She's fascinated with horses and horse riding.",
+    ]
 
-    i1, i2 = random.sample(range(0, len(traits) -1), 2)
+    i1, i2 = random.sample(range(0, len(traits) - 1), 2)
     return [traits[i1], traits[i2]]
 
 
 def fetch_from_evi(text):
     # Code for fetching from evi removed
-    return ''
+    return ""
 
 
 # fetch from duckduckgo api
 def fetch_from_duckduckgo(entity):
-    text = ''
-    req = requests.get('https://api.duckduckgo.com/?q={}&format=json'.format(entity))
+    text = ""
+    req = requests.get("https://api.duckduckgo.com/?q={}&format=json".format(entity))
     if req:
         try:
             d = req.json()
-            text = d.get('AbstractText')
-            related = d.get('RelatedTopics', [{}])
+            text = d.get("AbstractText")
+            related = d.get("RelatedTopics", [{}])
 
             # if there is no text, try fetching the first related item instead
             if not text and related:
-                new_url = related[0].get('FirstURL')
+                new_url = related[0].get("FirstURL")
                 if new_url:
-                    new_req = requests.get(new_url + '?format=json').json()
-                    text = new_req.get('AbstractText')
+                    new_req = requests.get(new_url + "?format=json").json()
+                    text = new_req.get("AbstractText")
         except:
             pass
 
@@ -84,38 +85,39 @@ def fetch_from_duckduckgo(entity):
 
 
 def get_nlp_url():
-    client = boto3.client('lambda')
-    result = client.get_function_configuration(FunctionName='lambda_function_name')
-    return result['Environment']['Variables']['NLP']
+    client = boto3.client("lambda")
+    result = client.get_function_configuration(FunctionName="lambda_function_name")
+    return result["Environment"]["Variables"]["NLP"]
 
 
 # Feature dictionary generation
 
+
 def gen_feature_dict(*features, cobot=False):
     feature_dict = {}
     for feature in features:
-        if cobot and feature.get('cobot-steps'):
-            feature_dict[feature['name']] = feature['cobot-steps']
+        if cobot and feature.get("cobot-steps"):
+            feature_dict[feature["name"]] = feature["cobot-steps"]
         else:
-            feature_dict[feature['name']] = feature.get('steps', feature['name'])
+            feature_dict[feature["name"]] = feature.get("steps", feature["name"])
     return feature_dict
 
 
 def tag_matcher(text):
-    return re.findall(r'\<(.+?)_(.+?)(?:\: (.+?))?\>', text)
+    return re.findall(r"\<(.+?)_(.+?)(?:\: (.+?))?\>", text)
 
 
 def yank_tag(text):
-    match = re.search(r'(<.*?>)', text)
+    match = re.search(r"(<.*?>)", text)
     if match:
         tag = match.groups()[0]
     else:
-        tag = ''
+        tag = ""
     return tag
 
 
 def remove_new_lines(text):
-    return text.replace('\n', ' ')
+    return text.replace("\n", " ")
 
 
 def normalize_vector(vector):
@@ -126,39 +128,50 @@ def normalize_text(text):
     if not text:
         return text
     text = text.strip().lower()
-    if text in ['alexa prize social bot', 'social bot', 'bot', 'alexa prize', 'alexa', 'amazon', 'echo', 'computer', 'hi', 'hello']:
+    if text in [
+        "alexa prize social bot",
+        "social bot",
+        "bot",
+        "alexa prize",
+        "alexa",
+        "amazon",
+        "echo",
+        "computer",
+        "hi",
+        "hello",
+    ]:
         return text
     changed = True
     while changed:
-        changed = False 
-        if text != '' and text.startswith('alexa prize social bot '):
+        changed = False
+        if text != "" and text.startswith("alexa prize social bot "):
             text = text[23:]
             changed = True
-        if text != '' and text.startswith('social bot '):
+        if text != "" and text.startswith("social bot "):
             text = text[11:]
             changed = True
-        if text != '' and text.startswith('bot '):
+        if text != "" and text.startswith("bot "):
             text = text[4:]
             changed = True
-        if text != '' and text.startswith('alexa prize '):
+        if text != "" and text.startswith("alexa prize "):
             text = text[12:]
             changed = True
-        if text != '' and text.startswith('alexa '):
+        if text != "" and text.startswith("alexa "):
             text = text[6:]
             changed = True
-        if text != '' and text.startswith('amazon '):
+        if text != "" and text.startswith("amazon "):
             text = text[7:]
             changed = True
-        if text != '' and text.startswith('echo '):
+        if text != "" and text.startswith("echo "):
             text = text[5:]
             changed = True
-        if text != '' and text.startswith('computer '):
+        if text != "" and text.startswith("computer "):
             text = text[9:]
             changed = True
-        if text != '' and text.startswith('hi '):
+        if text != "" and text.startswith("hi "):
             text = text[3:]
             changed = True
-        if text != '' and text.startswith('hello '):
+        if text != "" and text.startswith("hello "):
             text = text[6:]
             changed = True
     return text
@@ -171,7 +184,7 @@ def stringify_list(some_list):
 
 
 def list_to_string(some_list):
-    return ' '.join([str(x) for x in some_list])
+    return " ".join([str(x) for x in some_list])
 
 
 def unique(some_list):
@@ -180,26 +193,26 @@ def unique(some_list):
 
 def construct_tag(tag, index, attribute=None):
     if attribute:
-        return f'<{tag}_{index}: {attribute}>'
+        return f"<{tag}_{index}: {attribute}>"
     else:
-        return f'<{tag}_{index}>'
+        return f"<{tag}_{index}>"
 
 
 def nice_print_tag(tag, index, attribute, example=False):
     tag_info = TAG_ATTRIBUTES.get(tag)
     if not tag_info:
         return None
-    text = ''
+    text = ""
     if example:
         if attribute:
-            return tag_info['attributes'][attribute]['example']
+            return tag_info["attributes"][attribute]["example"]
         else:
-            return tag_info['example']
+            return tag_info["example"]
 
     if attribute:
-        text = tag_info['attributes'][attribute]['display_name']
+        text = tag_info["attributes"][attribute]["display_name"]
 
-    text += tag_info['display_name']
+    text += tag_info["display_name"]
     if int(index) > 1:
-        text += f' {index}'
+        text += f" {index}"
     return text

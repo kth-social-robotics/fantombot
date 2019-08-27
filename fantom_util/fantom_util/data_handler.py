@@ -28,30 +28,34 @@ class DataHandler(object):
 
         self.fe = FeatureExtractor(features)
 
-        self.node_lookup_table, self.node_utts, self.id_utt, self.node_visit_counts, self.linked_nodes = DataHandler.prepare_from_db()
+        self.node_lookup_table, self.node_utts, self.id_utt, self.node_visit_counts, self.linked_nodes = (
+            DataHandler.prepare_from_db()
+        )
 
         for key in tqdm(self.id_utt):
             try:
                 self.id_utt[key] = self.process_utterance(self.id_utt[key])
             except:
-                print('ERROR')
+                print("ERROR")
                 for row in sys.exc_info()[-7:]:
                     print(row)
-                print(
-                    'On the utterance id: ',
-                    f'{key}, utterance: {self.id_utt[key]}'
-                )
+                print("On the utterance id: ", f"{key}, utterance: {self.id_utt[key]}")
 
     @staticmethod
     def prepare_from_db():
-        nodes = db_session \
-            .query(Node) \
-            .options(joinedload(Node.utterances)) \
+        nodes = (
+            db_session.query(Node)
+            .options(joinedload(Node.utterances))
             .filter(
-            Node.active.is_(True),
-            or_(Node.visited_count > 1, Node.child_count > 0, Node.is_user.is_(False))
-        ) \
+                Node.active.is_(True),
+                or_(
+                    Node.visited_count > 1,
+                    Node.child_count > 0,
+                    Node.is_user.is_(False),
+                ),
+            )
             .all()
+        )
         lookup_table = defaultdict(list)
         node_utts = defaultdict(list)
         node_visit_counts = {}
@@ -62,11 +66,14 @@ class DataHandler(object):
             node_visit_counts[node.id] = node.visited_count
             for utterance in node.utterances:
                 node_utts[node.id].append(utterance.id)
-                id_utt[utterance.id] = {'text': utterance.utterance_text}
+                id_utt[utterance.id] = {"text": utterance.utterance_text}
 
-        linked_nodes = {from_node: to_node
-                        for from_node, to_node
-                        in db_session.query(LinkedNodes.linked_from_node_id, LinkedNodes.linked_to_node_id).all()}
+        linked_nodes = {
+            from_node: to_node
+            for from_node, to_node in db_session.query(
+                LinkedNodes.linked_from_node_id, LinkedNodes.linked_to_node_id
+            ).all()
+        }
 
         return lookup_table, node_utts, id_utt, node_visit_counts, linked_nodes
 

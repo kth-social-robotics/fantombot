@@ -3,8 +3,9 @@ import json
 
 from fantom_util.constants import FANTOM_WORKDIR
 
+
 def connect_db(named_tuple_cursor=False):
-    with open(f'{FANTOM_WORKDIR}/.db_credentials.json', "r") as f:
+    with open(f"{FANTOM_WORKDIR}/.db_credentials.json", "r") as f:
         credentials = json.loads(f.read())
     try:
         conn = psycopg2.connect(**credentials)
