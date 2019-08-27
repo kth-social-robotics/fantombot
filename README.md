@@ -16,7 +16,7 @@ During the process of the Alexa Prize a crowdsourcing interface was developed an
 The majority of this directory contains all code related to development and maintaining of the graph. Graph search, a dialogue manager built on top of the graph is also included.
 
 ### sleep-walker
-
+The contents of the sleep-walker is scripts than ran every night to update the graph, graph search and NER-models.
 
 ### Publications
 [Crowdsourcing a Self-Evolving Dialog Graph](https://dl.acm.org/citation.cfm?id=3342790) (CUI paper)
