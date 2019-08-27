@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+from fantom_util.database import db_session
+from fantom_util.database.models import Node, NodeUtterance
+import fantom_util.score_functions
+#from fantom_util.file_io_util import pickle_to_bucket, unpickle_from_bucket
+from pickle import load, dump
+from fantom_util.test_scoring import test_scoring, generate_features
+from sqlalchemy import func
+import inspect
+import sys
+import types
+from tabulate import tabulate
+from sqlalchemy.orm import joinedload
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+#This gives 100 nodes with most children
+#nodes = db_session.query(Node, func.count(NodeUtterance.node_id)).join(NodeUtterance).options(joinedload(Node.utterances), joinedload(Node.node_utterances)).group_by(Node).order_by(func.count(NodeUtterance.node_id).desc()).limit(100).all()
+#This gives 100 rootnodes with most children
+nodes = db_session.query(Node, func.count(NodeUtterance.node_id)).join(NodeUtterance).options(joinedload(Node.utterances), joinedload(Node.node_utterances)).filter(Node.parent_id.is_(None)).group_by(Node).order_by(func.count(NodeUtterance.node_id).desc()).limit(100).all()
+test_set = []
+for node, child_count in nodes:
+    test_set.append([x.utterance_text for x in node.utterances])
+
+
+def is_function_local(object):
+    return isinstance(object, types.FunctionType) and object.__module__ == fantom_util.score_functions.__name__ and not object.__name__.startswith('_') and not object.__name__ == 'graph_search_score'
+
+
+score_functions = inspect.getmembers(sys.modules[fantom_util.score_functions.__name__], predicate=is_function_local)
+
+results = []
+
+list_of_dicts = generate_features(test_set)
+dump(list_of_dicts, open("test_features.p","wb"))
+list_of_dicts = load(open('test_features.p',"rb"))
+for func_name, func in score_functions:
+    res_dict = test_scoring(list_of_dicts, func)
+    results.append([func_name, res_dict['best_F1'], res_dict['best_precision'],
+        res_dict['best_recall'], res_dict['best_threshold'], res_dict['best_median_F1'], res_dict['total_time']])
+
+print(tabulate(results, headers=['Name', 'F1', 'Precision', 'Recall', 'Threshold', 'Median F1', 'Time'], tablefmt='orgtbl'))

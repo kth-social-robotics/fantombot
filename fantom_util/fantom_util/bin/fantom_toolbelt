@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+import argh
+from fantom_util.graph_tools.merging import (
+    exact_match
+)
+from fantom_util.graph_tools.node_tools import (
+    create_new_node, merge_nodes, split_nodes, set_parent,
+    list_productive_parents, delete_node, kill_children,
+    inactivate_node, classify_root_nodes, merge_by_score,
+    incoherent_nodes, activate_node, linked_nodes
+)
+from fantom_util.graph_tools.populate import populate
+
+
+
+if __name__ == '__main__':
+    parser = argh.ArghParser()
+    parser.add_commands([
+        set_parent,
+        list_productive_parents,
+        split_nodes,
+        exact_match,
+        merge_nodes,
+        populate,
+        kill_children,
+        create_new_node,
+        delete_node,
+        inactivate_node,
+        activate_node,
+        classify_root_nodes,
+        merge_by_score,
+        incoherent_nodes,
+        linked_nodes
+    ])
+    parser.dispatch()
