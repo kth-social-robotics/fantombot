@@ -6,5 +6,6 @@ We also include the code that was developed by Team Fantom during the 2018 Alexa
 
 ## Publications
 [Crowdsourcing a Self-Evolving Dialog Graph](https://dl.acm.org/citation.cfm?id=3342790) (CUI paper)
+
 [Fantom: A Crowdsourced Social Chatbot using an
 Evolving Dialog Graph](https://m.media-amazon.com/images/G/01/mobile-apps/dex/alexa/alexaprize/assets/pdf/2018/Fantom.pdf) (Alexa Prize Paper, Team Fantom)
