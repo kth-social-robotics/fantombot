@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js" charset="utf-8"></script>
+          <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+    </head>
+    <body>
+
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Score</th>
+                    <th>Node 1</th>
+                    <th>Node 2</th>
+                    <th>Parent utterances</th>
+                    <th>Utterance 1</th>
+                    <th>Utterance 2</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for merge in similar_node_pairs %}
+                    <tr data-pos="0" data-left-node-id="{{merge['left_node_id']}}" data-right-node-id="{{merge['right_node_id']}}">
+                        <td style="width: 170px">
+                            <button class="btn btn-primary btn-sm merge-button">merge</button>
+                            <button class="btn btn-danger btn-sm dont-merge-button">don't merge</button>
+                        </td>
+                        <td>{{merge['score']}}</td>
+                        <td class="left_node_id_text">{{merge['left_node_id']}}</td>
+                        <td class="right_node_id_text">{{merge['right_node_id']}}</td>
+                        <td>{{'<br>'.join(merge['parent_utterances'])|safe}}</td>
+                        <td class="left_node_utterance_text">{{'<br>'.join(merge['left_node_utterances'])|safe}}</td>
+                        <td class="right_node_utterance_text">{{'<br>'.join(merge['right_node_utterances'])|safe}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        <script>
+            $(function() {
+                var position = 1;
+
+                var update = function() {
+                    $(`table tbody tr`).attr('class', '')
+                    $(`table tbody tr td`).attr('class', '')
+
+                    $(`table tbody tr`).each(function(a,b){
+                        var left  = $(b).find(`td:first-child input`).prop('checked')
+                        var right = $(b).find(`td:nth-child(2) input`).prop('checked')
+                        if (!left && !right) {
+                            $(b).attr('class', '')
+                            $(b).find('td').attr('class', '')
+                        }
+                        if (left && !right) {
+                            $(b).find('td:first-child, td:nth-child(2)').attr('class', 'table-primary')
+                        }
+                        if (right && !left) {
+                            $(b).find('td:first-child, td:nth-child(2)').attr('class', 'table-warning')
+                        }
+                    })
+                    $(`table tbody tr:nth-child(${position}) td:not(:nth-child(1), :nth-child(2))`).attr('class', 'table-secondary')
+
+                };
+
+                var toggle = function (amount) {
+
+
+                    var pos = parseInt($(`table tbody tr:nth-child(${position})`).data('pos'))
+
+                    pos += amount;
+
+                    if (pos == 3) {
+                        pos = 0;
+                    } else if (pos == -1) {
+                        pos = 2;
+                    }
+
+                    $(`table tbody tr:nth-child(${position})`).data('pos', pos);
+
+                    $(`table tbody tr:nth-child(${position}) input`).prop('checked', false);
+
+                    if (pos == 1) {
+                        $(`table tbody tr:nth-child(${position}) td:first-child input`).prop('checked', true);
+                    } else if (pos == 2) {
+                        $(`table tbody tr:nth-child(${position}) td:nth-child(2) input`).prop('checked', true);
+                    }
+
+                    update()
+                }
+
+
+                $('.merge-button').on('click', function() {
+                    let leftNodeId = $(this).parents('tr').data('left-node-id');
+                    let rightNodeId = $(this).parents('tr').data('right-node-id');
+                    let leftNodeUtterances = $(this).parents('tr').find('.left_node_utterance_text').html();
+                    let rightNodeUtterances = $(this).parents('tr').find('.right_node_utterance_text').html();
+
+                    $.ajax({
+                      type: 'POST',
+                      contentType: 'application/json; charset=utf-8',
+                      url: '{{url_for('admin.merge_nodes')}}',
+                      data: JSON.stringify({
+                        'left_node_id': leftNodeId,
+                        'right_node_id': rightNodeId,
+                        'merge': true
+                      }),
+
+                      dataType: "json"
+                    }).done(function (data) {
+                    let newUtterances = leftNodeUtterances + '<br>' + rightNodeUtterances;
+                        $('table tbody tr').each(function(){
+                            if ($(this).data('left-node-id') == rightNodeId) {
+                                $(this).data('left-node-id', leftNodeId)
+                                $(this).attr('data-left-node-id', leftNodeId)
+                                $(this).find('.left_node_id_text').html(leftNodeId)
+                                $(this).find('.left_node_utterance_text').html(newUtterances)
+                            } else if ($(this).data('left-node-id') == leftNodeId) {
+                                $(this).find('.left_node_utterance_text').html(newUtterances)
+                            }
+
+                            if ($(this).data('right-node-id') == rightNodeId) {
+                                $(this).data('right-node-id', leftNodeId)
+                                $(this).attr('data-right-node-id', leftNodeId);
+                                $(this).find('.right_node_id_text').html(leftNodeId)
+                                $(this).find('.right_node_utterance_text').html(newUtterances)
+                            } else if ($(this).data('right-node-id') == leftNodeId) {
+                                $(this).find('.right_node_utterance_text').html(newUtterances)
+                            }
+
+                            if ($(this).data('right-node-id') == $(this).data('left-node-id')) {
+                                $(this).remove()
+                            }
+                        })
+                      });
+                });
+
+                $('.dont-merge-button').on('click', function() {
+                    let tr = $(this).parents('tr');
+                    $.ajax({
+                      type: 'POST',
+                      contentType: 'application/json; charset=utf-8',
+                      url: '{{url_for('admin.merge_nodes')}}',
+                      data: JSON.stringify({
+                        'left_node_id': $(this).parents('tr').data('left-node-id'),
+                        'right_node_id': $(this).parents('tr').data('right-node-id'),
+                        'merge': false
+                      }),
+
+                      dataType: "json"
+                    }).done(function (data) {
+                         tr.remove()
+                      });
+                });
+
+
+                Mousetrap.bind('j', function(e) {
+                //    position++;
+                //    update();
+                    return false;
+                });
+                Mousetrap.bind('k', function(e) {
+                //    if (position > 1) position--;
+                //    update();
+                    return false;
+                });
+                Mousetrap.bind('h', function(e) {
+                //    toggle(-1);
+                    return false;
+                });
+                Mousetrap.bind('l', function(e) {
+                    toggle(1);
+                    return false;
+                });
+                //update();
+            });
+
+        </script>
+    </body>
+</html>

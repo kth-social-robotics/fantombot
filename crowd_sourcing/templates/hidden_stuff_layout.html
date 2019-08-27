@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src='/static/js/tablesort.min.js'></script>
+
+
+    <!-- Include sort types you need -->
+    <script src='/static/js/sorts/tablesort.number.min.js'></script>
+    <script src='/static/js/sorts/tablesort.date.min.js'></script>
+    <script src="https://craig.global.ssl.fastly.net/js/mousetrap/mousetrap.min.js" charset="utf-8"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <title></title>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg navbar-light bg-light mb-3">
+  <a class="navbar-brand" href="#">Fantom!</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item{% if request.endpoint == 'admin.hidden_stuff' %} active{% endif %}">
+        <a class="nav-link" href="{{url_for('admin.hidden_stuff')}}">Crowd working</a>
+      </li>
+      <li class="nav-item{% if request.endpoint == 'admin.conversation' %} active{% endif %}">
+        <a class="nav-link" href="{{url_for('admin.conversation')}}">Conversations</a>
+      </li>
+      <li class="nav-item{% if request.endpoint == 'admin.get_tree_v3' %} active{% endif %}">
+        <a class="nav-link" href="{{url_for('admin.get_tree_v3')}}">Explore graph</a>
+      </li>
+      <li class="nav-item{% if request.endpoint == 'admin.fix_spelling_issues' %} active{% endif %}">
+        <a class="nav-link" href="{{url_for('admin.fix_spelling_issues')}}">Fix spellings</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+    {% block content %}{% endblock %}
+  </body>
+</html>

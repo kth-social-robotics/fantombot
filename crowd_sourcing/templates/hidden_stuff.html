@@ -1,0 +1,58 @@
+{% extends "hidden_stuff_layout.html" %}
+{% block content %}
+    <div class="container-fluid">
+
+      <a href="{{url_for('admin.create_new_hits', job_type='system', amount=1)}}">Create new system HIT</a>
+      <br>
+      <br>
+      Dead HITs: {{count_dead_hits}}
+      <br>
+      Balance: ${{balance}}
+      <br>
+      <br>
+      <table class="table" id="the-table">
+        <thead class="thead-dark">
+          <tr  data-sort-method='none'>
+            <th></th>
+            <th></th>
+            <th>Creation Time</th>
+            <th>Expires</th>
+
+            <th>HIT Status</th>
+
+
+
+
+            <th>Assignments available</th>
+
+            <th>HIT group</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for hit in hits%}
+          <tr class="{% if hit['HITReviewStatus'] == 'MarkedForReview' %}bg-warning{% elif hit['HITReviewStatus'] == 'ReviewedAppropriate' %}bg-success{% elif hit['HITReviewStatus'] == 'ReviewedInappropriate' %}bg-danger{% endif %}">
+            <td>{% if hit['NumberOfAssignmentsCompleted'] == hit['MaxAssignments'] %}<span class="badge badge-success">done</span>{% elif hit['NumberOfAssignmentsAvailable'] != hit['MaxAssignments'] and hit['NumberOfAssignmentsPending'] == 0 %}<a href="{{url_for('admin.get_tree_for_job_id', hit_id=hit['HITId'])}}" class="btn btn-sm btn-secondary">Show assignment</a>{% endif %}</td>
+
+
+
+            <td><a href="{{url_for('create_content.job', workerId='NO_WORKER_ID', ext_job_id=hit['ExtJobId'])}}" target="_blank">show job</a></td>
+            <td>{{hit['CreationTime']|naturaltime}}</td>
+            <td>{{hit['Expiration']|naturaltime}}</td>
+
+            <td>{{hit['HITStatus']}}</td>
+
+
+
+
+            <td>{{hit['NumberOfAssignmentsAvailable']}} of {{hit['MaxAssignments']}}</td>
+
+            <td><span title="{{hit['HITGroupId']}}">{{hit['ShortHITGroupId']}}</span></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <script>
+        new Tablesort(document.getElementById('the-table'));
+      </script>
+{% endblock %}

@@ -1,0 +1,25 @@
+<div style="width: 90%; height: 100%;">
+
+
+
+    {% if tag_attributes %}
+    <input type="hidden" id="answer" name="answer">
+    <div id="editor" contenteditable="true" style="height: 60px; text-align: left" class="form-control"></div>
+    <div class="row mt-2 pl-3 available-tags text-left">
+        Please click on or drag the tokens into the dialog box above to use them as part of your answer:
+        <br>
+        <div class="mt-2">
+        {% for tag, index, attribute in tag_attributes %}
+            {% if attribute %}
+                <img src="{{url_for('create_content.generate_image', tag=tag, index=index, attribute=attribute)}}" class="tag-img" data-text="{{tag}}_{{index}}: {{attribute}}">
+            {% else %}
+                <img src="{{url_for('create_content.generate_image', tag=tag, index=index)}}" class="tag-img" data-text="{{tag}}_{{index}}">
+            {% endif %}
+
+        {% endfor %}
+            </div>
+    </div>
+    {% else %}
+        <textarea name="answer" id="answer" rows="1" class="form-control" placeholder="PLEASE WRITE AN ANSWER"></textarea>
+    {% endif %}
+</div>

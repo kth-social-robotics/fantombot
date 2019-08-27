@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115987423-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-115987423-1');
+  </script>
+  <meta charset="utf-8">
+  <title>Data collection</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://www.youtube.com/player_api"></script>
+
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script>
+    $(function() {
+      submitButton = document.getElementById("submit-button");
+      taskIdentifier = document.getElementById("task_identifier");
+
+
+      taskIdentifier.value = 3315.2;
+
+
+
+
+      // when video ends
+
+        $('#mturk_form').on('click', function() {
+          return isDone;
+        })
+
+      var player, timer, timeSpent = [];
+      var isDone = false;
+      var submitButton;
+      var taskIdentifier;
+
+      window.onYouTubePlayerAPIReady = function() {
+          player = new YT.Player('player', {
+
+            playerVars: {
+              autoplay: 0,
+              rel: 0,
+              modestbranding: 1,
+              showinfo: 0,
+              enablejsapi: 1,
+              origin: 'https://fantombot.com'
+            },
+
+            videoId: '4PlW3nFwhGY',
+            events: {
+              onStateChange: onPlayerStateChange
+            }
+          });
+      }
+      function onPlayerStateChange(event) {
+
+        if(event.data == YT.PlayerState.PLAYING) { // Started playing
+          if(!timeSpent.length){
+              timeSpent = new Array( parseInt(player.getDuration()) );
+          }
+          timer = setInterval(record,100);
+        } else {
+            clearInterval(timer);
+        }
+
+          if(event.data == YT.PlayerState.ENDED) {
+            var percent = 0;
+            for(var i=0, l=timeSpent.length; i<l; i++){
+                if(timeSpent[i]) percent++;
+            }
+            taskIdentifier.value = parseFloat(taskIdentifier.value) + (percent / timeSpent.length)
+            if (percent / timeSpent.length > 0.90) {
+              isDone = true;
+              submitButton.disabled = false;
+              submitButton.value = 'Click to continue to the quiz';
+            }
+          }
+      }
+      function record(){
+      timeSpent[ parseInt(player.getCurrentTime()) ] = true;
+
+  }
+    })
+    </script>
+</head>
+
+<body>
+
+      <form name='mturk_form' method='post' id='mturk_form' action='{{url_for('training.training_submit')}}'>
+
+        <input type='hidden' name='external_worker_id' id='external_worker_id' value='{{external_worker_id}}' />
+        <input type='hidden' name='task_id' id='task_id' value='{{task_id}}' />
+        <input type="hidden" name="task_identifier" id="task_identifier" value="3315.2">
+
+    <div class="container">
+
+      <div class="row justify-content-md-center text-left pt-5">
+
+        <div class="chat col col-8 chat-history pl-5 pr-5 pt-4 pb-4 border border-right-0">
+          <div id="player" class="col-12"></div>
+
+          <input type="submit" id="submit-button" class="btn btn-primary col-12" name="" value="Please watch the whole video to continue" disabled>
+
+        </div>
+        <div class="col col-4 border border-left-0">{% block right_side %}{% endblock %}</div>
+      </div>
+    </div>
+  </form>
+
+</body>
+
+</html>

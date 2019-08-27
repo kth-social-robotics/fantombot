@@ -1,0 +1,236 @@
+{% extends "hidden_stuff_layout.html" %}
+{% block head %}
+ <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.css">
+<link rel="stylesheet" href="/static/css/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
+<script type="text/ecmascript" src="/static/js/trirand/i18n/grid.locale-en.js"></script>
+    <!-- This is the Javascript file of jqGrid -->
+    <script type="text/ecmascript" src="/static/js/trirand/jquery.jqGrid.min.js"></script>
+    <!-- This is the localization file of the grid controlling messages, labels, etc.
+    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
+
+    <!-- The link to the CSS that the grid needs -->
+
+<link rel="stylesheet" type="text/css" media="screen" href="/static/css/trirand/ui.jqgrid-bootstrap4.css" />
+
+<style>
+    .ui-jqgrid .ui-search-table .ui-search-oper {
+        border: 0px none #fff;
+        padding: 0px;
+        padding-top: 5px;
+        padding-left: 5px
+    }
+
+     .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+    }
+
+    #gsh_jqGrid_has_feedback .ui-search-oper, #gsh_jqGrid_has_amazon_rating .ui-search-oper, #gsh_jqGrid_has_amazon_topic .ui-search-oper, #gsh_jqGrid_has_amazon_error_turn .ui-search-oper, #gsh_jqGrid_start_time .ui-search-oper {
+        display: none
+    }
+
+</style>
+
+
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <input type="text" id="datepicker" style="width: 300px;">
+    </div>
+<div class="row mb-2">
+    <div class="col-12">
+    Average conversation turns: {{'%0.2f'| format(avg_conversation_turns|float)}}<br>
+    Average rating: {{'%0.2f'| format(avg_rating)}}
+        <div style="height: 200px; width: 200px;">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+
+
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+
+</div>
+<script type="text/javascript">
+    var colors = {
+        5: 'rgba(20, 231, 5, 0.4)',
+        4: 'rgba(198, 255, 0, 0.4)',
+        3: 'rgba(255, 238, 88, 0.4)',
+        2: 'rgba(255, 183, 77, 0.4)',
+        1: 'rgba(255, 99, 71, 0.4)',
+        0: 'white'
+
+    }
+
+    var ctx = document.getElementById("myChart").getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+
+    data: {
+        labels: {{binned_ratings_labels|tojson}},
+        datasets: [{
+            label: '# of Ratings',
+            data: {{binned_ratings_values|tojson}},
+            backgroundColor: [
+                colors[1],
+                colors[2],
+                colors[3],
+                colors[4],
+                colors[5]
+            ],
+            borderColor: [
+                colors[1].replace('0.2', '1'),
+                colors[2].replace('0.2', '1'),
+                colors[3].replace('0.2', '1'),
+                colors[4].replace('0.2', '1'),
+                colors[5].replace('0.2', '1')
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+moment.locale('se');
+    var base_url = '{{url_for('admin.conversation', start_time='XXXXXX', end_time='YYYYYY')|safe}}';
+
+       $('#datepicker').daterangepicker({
+       opens: 'down',
+       alwaysShowCalendars: true,
+       locale: {
+      format: 'DD-MM-YYYY HH:mm'
+},
+ranges: {
+           'Today': [moment().startOf('day'), moment().endOf('day')],
+           'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+           'Last 7 Days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
+           'Last 30 Days': [moment().subtract(29, 'days').startOf('day'), moment().endOf('day')],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+},
+        timePicker: true,
+        startDate: moment('{{start_time}}'),
+        endDate: moment('{{end_time}}'),
+       }, function(start, end, label) {
+       var url = base_url.replace('XXXXXX', start.format('YYYY-MM-DD HH:mm:ss')).replace('YYYYYY', end.format('YYYY-MM-DD HH:mm:ss'))
+       location.href = url
+
+});
+
+
+        var mydata = [
+        {% for rating in ratings%}
+            {
+                link: '<a href="{{url_for('admin.show_conversation', rating_id=rating.id)}}">show</a>',
+                start_time: '{{rating.start_time}}',
+                user_rating: {{rating.rating or 'null'}},
+                amazon_rating: {{'%0.2f'| format(rating.avg_amazon_rating|float)}},
+                turns: {{rating.turns}},
+                turn_error: {{ rating.turn_error or 'null' }},
+                graphsearch_score: {{'%0.2f'| format(rating.avg_graphsearch_score|float)}},
+                graphsearch: {{'%0.2f'| format(rating.graphsearch_ratio|float)}},
+                evi: {{'%0.2f'| format(rating.evi_ratio|float)}},
+                fallback: {{'%0.2f'| format(rating.fallback_ratio|float)}},
+                safetyfilter: {{'%0.2f'| format(rating.safetyfilter_ratio|float)}},
+                common: {{'%0.2f'| format(rating.common_ratio|float)}},
+                other: {{'%0.2f'| format(rating.other_ratio|float)}},
+                feedback: '{{rating.feedback or ''}}',
+                has_feedback: {% if rating.feedback %}1{%else%}0{%endif%},
+                has_amazon_rating: {% if rating.avg_amazon_rating %}1{%else%}0{%endif%},
+                has_amazon_topic: {% if rating.has_amazon_topic_annotations %}1{%else%}0{%endif%},
+                has_amazon_error_turn: {% if rating.turn_error %}1{%else%}0{%endif%},
+            },
+        {% endfor %}
+        ];
+
+        $(document).ready(function () {
+            $("#jqGrid").jqGrid({
+                datatype: "local",
+				data: mydata,
+				styleUI : 'Bootstrap4',
+				autowidth: true,
+                height: '100%',
+                responsive: true,
+
+		        iconSet: 'Octicons',
+                colMenu : true,
+                sortable: true,
+                pager: "#jqGridPager",
+                rowNum: 150,
+                colModel: [
+                    { label: '', name: 'link', search: false, width: 80, sortable: false },
+                    { label: 'Start Time', name: 'start_time', width: 270, align: 'center', searchoptions: {sopt: ['neq'], clearSearch: false}},
+
+
+
+
+                    { label: 'Rating', name: 'user_rating', sorttype: 'number', align: 'center', searchoptions: {sopt: ["ge","le","eq"], clearSearch: false}, width: 90, cellattr: function (rowId, tv, rawObject, cm, rdata) {
+    return 'style="background-color: ' + colors[parseInt(Math.ceil(tv))] + '"';
+}},
+                    { label: 'A. Rating', name: 'amazon_rating', sorttype: 'number', align: 'center', searchoptions: {sopt: ["ge","le","eq"], clearSearch: false}, formatter: 'number', width: 120, cellattr: function (rowId, tv, rawObject, cm, rdata) {
+
+    return 'style="background-color: ' + colors[parseInt(Math.ceil(tv))] + '"';
+}},
+                    { label: 'Turns', name: 'turns', align: 'center', sorttype: 'number', searchoptions: {sopt: ["ge","le","eq"], clearSearch: false}, width: 100},
+                    { label: 'Error turn', name: 'turn_error', align: 'center', sorttype: 'number', searchoptions: {sopt: ["ge","le","eq"], clearSearch: false}, width: 130},
+                    { label: 'GS score', align: 'center', sorttype: 'number', name: 'graphsearch_score', searchoptions: {sopt: ["ge","le","eq"], clearSearch: false}, width: 130},
+                    { label: 'GS', align: 'center', sorttype: 'number', name: 'graphsearch', search: false, width: 70},
+                    { label: 'EVI', name: 'evi', align: 'center', sorttype: 'number', search: false, width: 70},
+                    { label: 'Fallback', align: 'center', sorttype: 'number', name: 'fallback', search: false, width: 120},
+                    { label: 'Safety', align: 'center', sorttype: 'number', name: 'safetyfilter', search: false, width: 100},
+                    { label: 'Common', align: 'center', sorttype: 'number', name: 'common', search: false, width: 120},
+                    { label: 'Other', align: 'center', sorttype: 'number', name: 'other', search: false, width: 90},
+                    { label: 'Feedback', name: 'feedback', width: 350, sorttype: 'text', searchoptions: {sopt: ["cn"]}},
+                    { label: 'feedback', align: 'center', formatter: 'checkbox', name: 'has_feedback', stype: 'select', defval: '', searchoptions: {searchOperators: false, value:{'': 'All', 0:'N', 1:'Y'}}, defaultValue: '', width: 130},
+                    { label: 'A. rating', align: 'center', formatter: 'checkbox', name: 'has_amazon_rating', stype: 'select', searchoptions: {value:{'': 'All', 0:'N',1:'Y'}}, defaultValue: '', width: 125},
+                    { label: 'A. topic', align: 'center', formatter: 'checkbox', name: 'has_amazon_topic', stype: 'select', searchoptions: {value:{'': 'All', 0:'N',1:'Y'}}, defaultValue: '', width: 115},
+                    { label: 'A. error turn', align: 'center', formatter: 'checkbox', name: 'has_amazon_error_turn', stype: 'select', searchoptions: {value:{'': 'All', 0:'N',1:'Y'}}, defaultValue: '', width: 165},
+
+
+                ],
+                viewrecords: true,
+                toppager: true,
+                multiSort: true
+            });
+            $('#jqGrid').jqGrid('filterToolbar',{
+                // JSON stringify all data from search, including search toolbar operators
+                stringResult: true,
+                // instuct the grid toolbar to show the search options
+                searchOperators: true,
+                searchOnEnter:false,
+                onClearSearchValue : function (elem, coli, soptions, defval) {
+                console.log('yay', elem, coli, soptions, defval)
+					if(coli > 0) {
+						var name = this.p.colModel[coli].name;
+						if(name === 'has_feedback' || name === 'has_amazon_rating' || name === 'has_amazon_topic' || name === 'has_amazon_error_turn') {
+							$(elem).val(defval);
+						}
+
+					}
+				},
+            });
+        });
+
+
+    </script>
+{% endblock %}
