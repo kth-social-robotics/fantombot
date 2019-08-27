@@ -1,1 +1,3 @@
-# fantombot
+# Crowdsourcing a Self-Evolving Dialog Graph
+
+This is the code used for the analysis in the paper "Crowdsourcing a Self-Evolving Dialog Graph", presented at the first installment of the conference on Conversational User Interfaces (CUI) 2019. Every piece of code and data used is included with the exception of the 200 utterance pairs of alexa-user dialogue, as these are not eligble for further sharing.
