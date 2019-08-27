@@ -77,7 +77,7 @@ class LDAModel(Model):
                 for uttID in dialogs_key[key]:
                     temp_utt = temp_utt + dh.id_utt[uttID]["clean_text"] + " "
                 utterances.append(temp_utt)
-Î
+
             count = 0
             for utt in utterances:
                 if utt.replace(" ", "") != "":
